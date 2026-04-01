@@ -2,441 +2,89 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>VIRO V1</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIRO OS</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        body, html { margin: 0; padding: 0; height: 100%; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #1a0033; color: white; }
+        
+        /* Boot Animation */
+        #boot-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, #4b0082 0%, #000000 100%);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 1000; animation: fadeOut 1s forwards 3s;
         }
+        .starburst { width: 100px; height: 100px; background: purple; border-radius: 50%; filter: blur(20px); animation: burst 1s ease-out; }
+        #viro-logo { font-size: 4em; font-weight: bold; opacity: 0; animation: fadeIn 0.5s forwards 1s; }
+        
+        @keyframes burst { 0% { transform: scale(0.1); opacity: 0; } 50% { opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
+        @keyframes fadeIn { to { opacity: 1; } }
+        @keyframes fadeOut { to { visibility: hidden; opacity: 0; } }
 
-        body {
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-            min-height: 100vh;
-            background: #02020a;
-            color: #eae5ff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow-x: hidden;
-        }
+        /* OS Environment */
+        #os-desktop { display: none; height: 100vh; background-image: url('https://wallpaperaccess.com'); background-size: cover; }
+        #desktop-content { padding: 50px; display: flex; flex-direction: column; align-items: center; }
+        
+        /* Viro Homepage Elements */
+        #search-bar { width: 40%; padding: 15px; border-radius: 25px; border: none; margin-top: 20px; text-align: center; background: rgba(255,255,255,0.8); }
+        
+        /* Taskbar */
+        #taskbar { position: fixed; bottom: 0; width: 100%; height: 50px; background: rgba(0,0,0,0.8); display: flex; align-items: center; padding: 0 10px; }
+        .app-icon { width: 35px; height: 35px; margin: 0 10px; cursor: pointer; border-radius: 5px; }
 
-        /* compact galaxy bg */
-        .galaxy-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            background: radial-gradient(ellipse at 40% 50%, #0c0420, #010003, #000000);
-        }
-
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            opacity: 0;
-            animation: twinkle 2.5s infinite alternate;
-        }
-
-        @keyframes twinkle {
-            0% { opacity: 0.2; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.15); }
-        }
-
-        .nebula {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(60px);
-            opacity: 0.25;
-            animation: drift 35s infinite alternate;
-        }
-        .nebula-1 { width: 350px; height: 350px; background: #5a2a9e; top: -80px; left: -100px; }
-        .nebula-2 { width: 400px; height: 400px; background: #1a5f7a; bottom: -120px; right: -80px; }
-        .nebula-3 { width: 280px; height: 280px; background: #b46eff; top: 60%; left: 70%; opacity: 0.2; }
-
-        @keyframes drift {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(25px, 20px); }
-        }
-
-        /* COMPACT CONTAINER — smaller size */
-        .container {
-            position: relative;
-            z-index: 10;
-            width: 90%;
-            max-width: 560px;
-            background: rgba(8, 6, 20, 0.65);
-            backdrop-filter: blur(16px);
-            border-radius: 32px;
-            padding: 1.4rem 1.6rem 1.8rem;
-            border: 1px solid rgba(140, 100, 240, 0.5);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.5), 0 0 20px rgba(120, 80, 255, 0.2);
-            transition: all 0.2s ease;
-        }
-
-        /* smaller title */
-        .title {
-            text-align: center;
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: -0.01em;
-            margin-bottom: 0.1rem;
-            background: linear-gradient(135deg, #ffffff, #c58aff, #a855f7);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: galaxyShift 6s ease infinite;
-        }
-
-        @keyframes galaxyShift {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
-        }
-
-        .sub {
-            text-align: center;
-            color: #b2a8e0;
-            margin-bottom: 1.2rem;
-            font-size: 0.7rem;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            font-weight: 400;
-        }
-
-        /* compact engine selector */
-        .engine-selector {
-            display: flex;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 5px 10px;
-            border-radius: 50px;
-            justify-content: center;
-            margin-bottom: 1rem;
-        }
-
-        .engine-btn {
-            background: rgba(25, 20, 55, 0.8);
-            border: 1px solid #5e4ab3;
-            color: #ccc6ff;
-            padding: 5px 14px;
-            border-radius: 40px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: 0.2s;
-            font-size: 0.75rem;
-        }
-
-        .engine-btn.active {
-            background: linear-gradient(145deg, #7c3aed, #a45eff);
-            border-color: #bf8aff;
-            color: white;
-            box-shadow: 0 0 8px rgba(168, 85, 247, 0.6);
-        }
-
-        .engine-btn:hover {
-            transform: scale(1.02);
-            background: #684fcc;
-        }
-
-        /* search row — tighter */
-        .input-group {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 0.8rem;
-        }
-
-        #searchInput {
-            flex: 1;
-            padding: 0.7rem 1.2rem;
-            font-size: 0.9rem;
-            background: rgba(15, 12, 35, 0.85);
-            border: 1px solid #6b55cf;
-            border-radius: 60px;
-            color: white;
-            outline: none;
-            font-family: inherit;
-        }
-
-        #searchInput:focus {
-            border-color: #b77eff;
-            box-shadow: 0 0 12px rgba(130, 90, 255, 0.5);
-        }
-
-        .search-btn {
-            background: linear-gradient(95deg, #6d28d9, #9333ea);
-            border: none;
-            padding: 0 1.4rem;
-            border-radius: 60px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: 0.2s;
-        }
-
-        .search-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 14px rgba(139, 92, 246, 0.7);
-        }
-
-        /* special options row compact */
-        .special-options {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            margin: 0.6rem 0 0.4rem;
-            flex-wrap: wrap;
-        }
-
-        .special-btn {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid #6150b5;
-            color: #cfc5ff;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            transition: 0.2s;
-            font-weight: 500;
-        }
-
-        .special-btn:hover {
-            background: #3a2a7a;
-            border-color: #aa88ff;
-            color: white;
-        }
-
-        /* footer smaller */
-        .footer-note {
-            text-align: center;
-            margin-top: 1.2rem;
-            font-size: 0.6rem;
-            color: #8a81b5;
-            border-top: 1px dashed rgba(110, 80, 200, 0.4);
-            padding-top: 0.8rem;
-        }
-
-        .badge {
-            font-family: monospace;
-            background: #0e0a1faa;
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 0.6rem;
-        }
-
-        /* tiny extra */
-        .shooting-star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            box-shadow: 0 0 8px #fff;
-            border-radius: 50%;
-            opacity: 0;
-            animation: shootSmall 4s linear infinite;
-        }
-
-        @keyframes shootSmall {
-            0% { transform: translateX(0) translateY(0) rotate(45deg); opacity: 0; }
-            15% { opacity: 0.8; }
-            80% { opacity: 0.8; }
-            100% { transform: translateX(220px) translateY(220px) rotate(45deg); opacity: 0; }
+        /* Login Modal */
+        #login-modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: #2d0059; padding: 30px; border-radius: 10px; border: 2px solid #8a2be2;
+            z-index: 1001; text-align: center;
         }
     </style>
 </head>
 <body>
-    <div class="galaxy-bg">
-        <div class="nebula nebula-1"></div>
-        <div class="nebula nebula-2"></div>
-        <div class="nebula nebula-3"></div>
+
+    <!-- Boot Screen -->
+    <div id="boot-screen">
+        <div class="starburst"></div>
+        <div id="viro-logo">VIRO</div>
     </div>
 
-    <div class="container">
-        <div class="title">VIRO V1</div>
-        <div class="sub">⚡ galactic redirector ⚡</div>
+    <!-- OS Desktop -->
+    <div id="os-desktop">
+        <div id="desktop-content">
+            <h1>VIRO</h1>
+            <input type="text" id="search-bar" placeholder="Search Viro..." />
+        </div>
+        
+        <div id="taskbar">
+            <img src="https://flaticon.com" class="app-icon" title="Discord" onclick="openApp('discord')">
+            <img src="https://rbxcdn.com" class="app-icon" title="Roblox" onclick="openApp('roblox')">
+            <img src="https://flaticon.com" class="app-icon" title="Files" onclick="openApp('files')">
+        </div>
+    </div>
 
-        <div class="engine-selector">
-            <div data-engine="ddg" class="engine-btn active">🦆 DDG</div>
-            <div data-engine="aboutblank" class="engine-btn">📄 about:blank</div>
-            <div data-engine="blob" class="engine-btn">🧬 blob</div>
-        </div>
-
-        <div class="input-group">
-            <input type="text" id="searchInput" placeholder="search cosmos..." autocomplete="off">
-            <button id="searchBtn" class="search-btn">✨ GO</button>
-        </div>
-
-        <div class="special-options">
-            <div id="forceSuffixBtn" class="special-btn">🔗 ?suicidepreventionlifeline.org</div>
-            <div id="exampleBtn" class="special-btn">🌌 random query</div>
-        </div>
-        <div class="footer-note">
-            <span class="badge">VIRO V1 · always append fun suffix</span>
-        </div>
+    <!-- Login -->
+    <div id="login-modal">
+        <h2>CREATE YOUR ACCOUNT!</h2>
+        <input type="text" placeholder="Username" style="display:block; margin:10px auto;"><br>
+        <button onclick="startOS()">Login / Sign Up</button>
     </div>
 
     <script>
-        // ========== STARS (compact) ==========
-        function createStars() {
-            const bg = document.querySelector('.galaxy-bg');
-            const starCount = 180;
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.classList.add('star');
-                const size = Math.random() * 2.2 + 0.8;
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                star.style.animationDelay = `${Math.random() * 4}s`;
-                star.style.animationDuration = `${Math.random() * 1.8 + 1.2}s`;
-                bg.appendChild(star);
+        // Start Fullscreen
+        function startOS() {
+            document.getElementById('login-modal').style.display = 'none';
+            document.getElementById('os-desktop').style.display = 'block';
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
             }
         }
 
-        function createShootingStars() {
-            const bg = document.querySelector('.galaxy-bg');
-            for (let i = 0; i < 4; i++) {
-                const star = document.createElement('div');
-                star.classList.add('shooting-star');
-                star.style.top = `${Math.random() * 70}%`;
-                star.style.left = `${Math.random() * 80}%`;
-                star.style.animationDelay = `${Math.random() * 10}s`;
-                star.style.animationDuration = `${Math.random() * 2.5 + 2}s`;
-                bg.appendChild(star);
-            }
+        // App Emulator (Now.gg Unblocked)
+        function openApp(app) {
+            if(app === 'discord') window.open('https://now.gg', '_blank');
+            if(app === 'roblox') window.open('https://now.gg', '_blank');
+            if(app === 'files') alert("Opening Files... (We can use different files)");
         }
-
-        createStars();
-        createShootingStars();
-
-        // gentle nebula drift
-        setInterval(() => {
-            document.querySelectorAll('.nebula').forEach(orb => {
-                const x = Math.sin(Date.now() * 0.0004) * 6;
-                const y = Math.cos(Date.now() * 0.0006) * 5;
-                orb.style.transform = `translate(${x}px, ${y}px)`;
-            });
-        }, 120);
-
-        // ========== VIRO V1 ENGINE ==========
-        let currentEngine = 'ddg';   // 'ddg', 'aboutblank', 'blob'
-        const appendSuffix = true;    // always true for funnsies
-
-        const searchInput = document.getElementById('searchInput');
-        const searchBtn = document.getElementById('searchBtn');
-        const forceSuffixBtn = document.getElementById('forceSuffixBtn');
-        const exampleBtn = document.getElementById('exampleBtn');
-        const engineBtns = document.querySelectorAll('.engine-btn');
-
-        function setActiveEngine(engine) {
-            currentEngine = engine;
-            engineBtns.forEach(btn => {
-                const val = btn.getAttribute('data-engine');
-                if (val === engine) btn.classList.add('active');
-                else btn.classList.remove('active');
-            });
-        }
-
-        engineBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                setActiveEngine(btn.getAttribute('data-engine'));
-            });
-        });
-
-        // build duckduckgo url with mandatory suffix
-        function buildDuckDuckGoURL(query) {
-            const encoded = encodeURIComponent(query);
-            let base = `https://duckduckgo.com/?q=${encoded}`;
-            // funnsies: always append ?suicidepreventionlifeline.org at end
-            base += `&suicidepreventionlifeline.org`;
-            return base;
-        }
-
-        function performSearch(query) {
-            if (!query.trim()) {
-                searchInput.style.borderColor = "#ff6680";
-                setTimeout(() => { searchInput.style.borderColor = "#6b55cf"; }, 700);
-                return;
-            }
-            searchInput.style.borderColor = "#6b55cf";
-            const targetURL = buildDuckDuckGoURL(query);
-
-            if (currentEngine === 'ddg') {
-                window.location.href = targetURL;
-            } 
-            else if (currentEngine === 'aboutblank') {
-                const newWin = window.open('about:blank', '_blank');
-                if (newWin) {
-                    newWin.document.write(`
-                        <!DOCTYPE html>
-                        <html>
-                        <head><title>VIRO V1 · redirect</title>
-                        <script>window.location.replace("${targetURL.replace(/"/g, '&quot;')}");</script>
-                        </head>
-                        <body style="background:#020016; color:#ccc; font:12px monospace; display:flex; align-items:center; justify-content:center;">
-                            <p>🌠 viro v1 → redirecting</p>
-                        </body>
-                        </html>
-                    `);
-                    newWin.document.close();
-                } else {
-                    alert("⚠️ allow popups for about:blank mode");
-                }
-            } 
-            else if (currentEngine === 'blob') {
-                const blobHtml = `<!DOCTYPE html>
-                <html>
-                <head><title>VIRO V1 · blob</title>
-                <script>window.location.replace("${targetURL.replace(/"/g, '&quot;')}");</script>
-                </head>
-                <body style="background:#03001a; color:#aa99ff;"><pre>✨ viro v1 · quantum redirect ✨</pre></body>
-                </html>`;
-                const blob = new Blob([blobHtml], { type: 'text/html' });
-                const blobUrl = URL.createObjectURL(blob);
-                window.open(blobUrl, '_blank');
-                setTimeout(() => URL.revokeObjectURL(blobUrl), 800);
-            }
-        }
-
-        function onSearch() {
-            const q = searchInput.value.trim();
-            if (q) performSearch(q);
-        }
-
-        searchBtn.addEventListener('click', onSearch);
-        searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') onSearch(); });
-
-        // suffix reminder (always active)
-        forceSuffixBtn.addEventListener('click', () => {
-            alert("✨ funnsies locked: every search URL ends with ?suicidepreventionlifeline.org ✨");
-        });
-
-        // random example query (smaller set)
-        exampleBtn.addEventListener('click', () => {
-            const examples = ["galaxy core", "nebula drift", "viro quantum", "black hole wiki", "interstellar travel"];
-            const rand = examples[Math.floor(Math.random() * examples.length)];
-            searchInput.value = rand;
-            searchInput.focus();
-        });
-
-        // subtle container hover effect
-        const container = document.querySelector('.container');
-        container.addEventListener('mouseenter', () => {
-            container.style.boxShadow = `0 14px 30px rgba(0,0,0,0.6), 0 0 22px rgba(139, 92, 246, 0.4)`;
-        });
-        container.addEventListener('mouseleave', () => {
-            container.style.boxShadow = `0 12px 28px rgba(0, 0, 0, 0.5), 0 0 20px rgba(120, 80, 255, 0.2)`;
-        });
     </script>
 </body>
 </html>
