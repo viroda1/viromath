@@ -1,0 +1,228 @@
+{
+    "added": [
+        {
+            "proxyName": "aguse",
+            "targetElements": [
+                {
+                    "content": null,
+                    "target": "form[name='aguse_form']"
+                },
+                {
+                    "content": null,
+                    "target": "img[alt='aguse gateway']"
+                }
+            ]
+        },
+        {
+            "proxyName": "beaver_unblocker",
+            "targetElements": [
+                {
+                    "content": "Beaver Unblocker",
+                    "target": "title"
+                },
+                {
+                    "content": "Beaver Unblocker",
+                    "target": ".title"
+                }
+            ]
+        },
+        {
+            "proxyName": "censor_dodge",
+            "targetElements": [
+                {
+                    "content": "Censor Dodge V1.83 BETA",
+                    "target": "a[href='http://censordodge.com'][target='blank']"
+                },
+                {
+                    "content": "Censor Dodge 1.83 BETA",
+                    "substringMatch": true,
+                    "target": "title"
+                }
+            ]
+        },
+        {
+            "proxyName": "ludicrous",
+            "targetElements": [
+                {
+                    "content": "Ludicrous",
+                    "target": "h1.Home_main-title__WtTWV span:first-child"
+                },
+                {
+                    "content": null,
+                    "target": "meta[content='Ludicrous | A School Site']"
+                }
+            ]
+        },
+        {
+            "proxyName": "radar_cloud",
+            "targetElements": [
+                {
+                    "content": "Radar Cloud",
+                    "target": "title"
+                },
+                {
+                    "content": null,
+                    "target": "meta[content='Radar Cloud']"
+                }
+            ]
+        },
+        {
+            "proxyName": "surfskip",
+            "targetElements": [
+                {
+                    "content": null,
+                    "target": "meta[content='SurfSkip is the best web proxy and Web VPN , ensuring private and secure internet browsing. Unlock restricted content, play games, and visit your favorite sites seamlessly with our webproxy  Experience the freedom of SurfSkip, your go-to solution for online privacy.']"
+                },
+                {
+                    "content": "Surfskip | Free VPN Browser - Your Best Web Proxy",
+                    "target": "title"
+                }
+            ]
+        },
+        {
+            "proxyName": "phantom_games",
+            "targetElements": [
+                {
+                    "content": null,
+                    "target": "meta[content='Phantom Games, the BEST place to find fun unblocked games!'"
+                },
+                {
+                    "content": "Phantom Games",
+                    "target": "title"
+                }
+            ]
+        },
+        {
+            "proxyName": "tinfÂ­0il",
+            "targetElements": [
+                {
+                    "content": "TinfÂ­0il",
+                    "target": ".heading > h1"
+                },
+                {
+                    "content": "TiÂ­nf0Â­il",
+                    "substringMatch": true,
+                    "target": "title"
+                }
+            ]
+        },
+        {
+            "proxyName": "asteroid",
+            "targetElements": [
+                {
+                    "content": null,
+                    "target": "meta[content='Math explained in easy language, plus puzzles, games, worksheets and an illustrated dictionary. For K-12 kids, teachers and parents.']"
+                },
+                {
+                    "content": "Inbox",
+                    "target": "title"
+                }
+            ]
+        },
+        {
+            "proxyName": "Equinox_v1",
+            "targetElements": [
+                {
+                    "content": null,
+                    "target": "input[placeholder='Search the web or enter a URL']"
+                },
+                {
+                    "content": "Equinox V1",
+                    "target": "title"
+                }
+            ]
+        },
+        {
+            "proxyName": "outred",
+            "targetElements": [
+                {
+                    "content": "OutRed",
+                    "target": ".title"
+                },
+                {
+                    "content": "OutRed",
+                    "substringMatch": true,
+                    "target": "title"
+                }
+            ]
+        },
+        {
+            "proxyName": "math_is_fun",
+            "targetElements": [
+                {
+                    "content": null,
+                    "target": "meta[content='Math explained in easy language, plus puzzles, games, worksheets and an illustrated dictionary. For K-12 kids, teachers and parents.']"
+                },
+                {
+                    "content": null,
+                    "target": "img[alt='Math is Fun']"
+                }
+            ]
+        },
+        {
+            "proxyName": "school_pepikutan",
+            "targetElements": [
+                {
+                    "content": "New tab",
+                    "target": ".chrome-tab-title"
+                },
+                {
+                    "content": null,
+                    "target": ".chrome-tab"
+                }
+            ]
+        },
+        {
+            "proxyName": "test_zecro",
+            "targetElements": [
+                {
+                    "content": "test.zecro.de",
+                    "target": "title"
+                },
+                {
+                    "content": null,
+                    "target": ".chrome-tab"
+                }
+            ]
+        },
+        {
+            "proxyName": "hp_ilove4ndan",
+            "targetElements": [
+                {
+                    "content": "hp.ilove4ndan.com",
+                    "target": "title"
+                },
+                {
+                    "content": null,
+                    "target": ".chrome-tab"
+                }
+            ]
+        },
+        {
+            "proxyName": "politechnika_nova",
+            "targetElements": [
+                {
+                    "content": "Welcome to Ghost",
+                    "target": "h1.hero__title"
+                },
+                {
+                    "content": null,
+                    "target": "meta[content='Ghost']"
+                }
+            ]
+        },
+        {
+            "proxyName": "unstop_browser",
+            "targetElements": [
+                {
+                    "content": "Please enable JavaScript to use this site.",
+                    "target": "noscript"
+                },
+                {
+                    "content": null,
+                    "target": ".chrome-tabs"
+                }
+            ]
+        }
+    ]
+                }
