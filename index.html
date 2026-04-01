@@ -2,269 +2,84 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VIRO OS Ultimate</title>
-
+<title>Download VIRO OS</title>
 <style>
-/* GLOBAL */
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow: hidden;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: black;
-    color: white;
-}
-
-/* BOOT SCREEN */
-#boot-screen {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, #4b0082 0%, #000 100%);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-.starburst {
-    width: 50px;
-    height: 50px;
-    background: purple;
-    border-radius: 50%;
-    filter: blur(20px);
-    animation: burst 1s ease-out forwards;
-}
-#viro-logo {
-    font-size: 4em;
-    font-weight: bold;
-    opacity: 0;
-    color: #a855f7;
-    animation: fadeIn 1s forwards 0.8s;
-}
-@keyframes burst {
-    0% { transform: scale(0.1); opacity: 0; }
-    50% { opacity: 1; }
-    100% { transform: scale(6); opacity: 0; }
-}
-@keyframes fadeIn { to { opacity: 1; } }
-
-/* LOGIN */
-#login-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #2d0059;
-    padding: 30px;
-    border-radius: 15px;
-    border: 2px solid #8a2be2;
-    z-index: 1001;
-    text-align: center;
-}
-
-/* HOME DESKTOP */
-#os-desktop {
-    display: none;
-    height: 100vh;
-    background: linear-gradient(#111, #000);
-}
-#desktop-content {
-    padding: 50px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-.title {
-    font-size: 60px;
-    color: #a855f7;
-    margin-bottom: 20px;
-}
-#search-bar {
-    width: 40%;
-    padding: 15px;
-    border-radius: 25px;
-    border: none;
-    text-align: center;
-    background: rgba(255,255,255,0.1);
-    color: white;
-    outline: none;
-}
-#search-bar::placeholder { color: rgba(255,255,255,0.5); }
-
-/* APPS GRID */
-.apps {
-    display: flex;
-    gap: 20px;
-    margin-top: 40px;
-}
-.app {
-    padding: 20px;
-    background: #1a1a1a;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.app:hover {
-    transform: scale(1.1);
-    background: #2a2a2a;
-}
-
-/* TASKBAR */
-#taskbar {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 50px;
-    background: rgba(0,0,0,0.8);
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-}
-.app-icon {
-    width: 35px;
-    height: 35px;
-    margin: 0 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: 0.3s;
-}
-.app-icon:hover { transform: scale(1.2); }
-
-/* BROWSER */
-#browser {
-    display: none;
-    height: 100vh;
-    background: #111;
-}
-.tabs {
-    display: flex;
-    background: #111;
-    padding: 5px;
-}
-.tab {
-    padding: 8px;
-    background: #2a2a2a;
-    margin-right: 5px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-.tab.active {
-    background: #444;
-}
-iframe {
-    width: 100%;
-    height: calc(100vh - 40px);
-    border: none;
-}
+body { display:flex; justify-content:center; align-items:center; height:100vh; background:#1a0033; color:white; font-family:sans-serif; flex-direction:column; }
+button { padding:15px 30px; font-size:18px; border:none; border-radius:10px; background:#a855f7; color:white; cursor:pointer; transition:0.2s; }
+button:hover { background:#d580ff; }
 </style>
 </head>
-
 <body>
-
-<!-- BOOT SCREEN -->
-<div id="boot-screen">
-    <div class="starburst"></div>
-    <div id="viro-logo">VIRO</div>
-</div>
-
-<!-- LOGIN -->
-<div id="login-modal">
-    <h2>CREATE YOUR ACCOUNT!</h2>
-    <input id="user" placeholder="Username"><br>
-    <input id="pass" type="password" placeholder="Password"><br><br>
-    <button onclick="login()">Login / Sign Up</button>
-</div>
-
-<!-- HOME DESKTOP -->
-<div id="os-desktop">
-    <div id="desktop-content">
-        <div class="title">VIRO</div>
-        <input type="text" id="search-bar" placeholder="Search VIRO..." />
-        <div class="apps">
-            <div class="app" onclick="openBrowser()">🌐 Browser</div>
-            <div class="app">🧩 Extensions</div>
-            <div class="app">⚙️ Settings</div>
-        </div>
-    </div>
-    <div id="taskbar">
-        <div class="app-icon" title="Files" onclick="alert('Files app')">📁</div>
-        <div class="app-icon" title="Browser" onclick="openBrowser()">🌐</div>
-    </div>
-</div>
-
-<!-- BROWSER -->
-<div id="browser">
-    <div class="tabs" id="tabs"></div>
-    <iframe id="frame"></iframe>
-</div>
+<h1>VIRO OS Download</h1>
+<button id="downloadBtn">Download VIRO OS as index.html</button>
 
 <script>
-/* BOOT → SHOW LOGIN */
-setTimeout(() => {
-    document.getElementById('boot-screen').style.display = 'none';
-    document.getElementById('login-modal').style.display = 'block';
-}, 2000);
-
-/* LOGIN SYSTEM */
-function login() {
-    let u = document.getElementById('user').value;
-    let p = document.getElementById('pass').value;
-    if(!localStorage.getItem(u)) localStorage.setItem(u,p);
-    if(localStorage.getItem(u) === p) {
-        document.getElementById('login-modal').style.display='none';
-        document.getElementById('os-desktop').style.display='block';
-        if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-    } else alert('Wrong login');
-}
-
-/* SEARCH BAR ENTER */
-document.getElementById('search-bar').addEventListener('keydown', e => {
-    if(e.key === "Enter") openBrowser(document.getElementById('search-bar').value);
-});
-
-/* BROWSER + TABS */
-let tabs = [];
-let currentTab = 0;
-
-function openBrowser(searchQuery) {
-    document.getElementById('os-desktop').style.display='none';
-    document.getElementById('browser').style.display='block';
-    if(searchQuery) tabs.push("https://duckduckgo.com/?q=" + encodeURIComponent(searchQuery));
-    else tabs.push("https://example.com");
-    currentTab = tabs.length -1;
-    renderTabs();
-    document.getElementById('frame').src = tabs[currentTab];
-}
-
-function newTab(url="https://example.com") {
-    tabs.push(url);
-    currentTab = tabs.length -1;
-    renderTabs();
-    document.getElementById('frame').src = url;
-}
-
-function renderTabs() {
-    const container = document.getElementById('tabs');
-    container.innerHTML = "";
-    tabs.forEach((t,i)=>{
-        const div = document.createElement('div');
-        div.className = "tab "+(i===currentTab?"active":"");
-        div.innerText = "Tab "+(i+1);
-        div.onclick=()=>switchTab(i);
-        container.appendChild(div);
-    });
-}
-
-function switchTab(i){
-    currentTab=i;
-    document.getElementById('frame').src=tabs[i];
-    renderTabs();
-}
+// Full VIRO OS HTML content
+const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VIRO OS Mini-OS</title>
+<link rel="icon" type="image/gif" href="https://github.com/viroda1/viromath/blob/main/Glow%20Black%20And%20White%20GIF%20by%20xponentialdesign%20-%20Find%20%26%20Share%20on%20GIPHY.gif">
+<style>
+body, html { margin:0; padding:0; height:100%; overflow:hidden; font-family:'Segoe UI',sans-serif; background:black; color:white; }
+#boot-screen { position:fixed; top:0; left:0; width:100%; height:100%; background:radial-gradient(circle,#4b0082 0%,#000 100%); display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:1000;}
+.starburst { width:50px; height:50px; background:purple; border-radius:50%; filter:blur(25px); animation:burst 3s ease-out forwards;}
+#viro-logo { font-size:4em; font-weight:bold; opacity:0; color:#a855f7; animation:fadeIn 1.5s forwards 1.5s;}
+@keyframes burst {0%{transform:scale(0.1);opacity:0;}50%{opacity:1;}100%{transform:scale(6);opacity:0;}}
+@keyframes fadeIn {to{opacity:1;}}
+#login-modal { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:#2d0059; padding:30px; border-radius:15px; border:2px solid #8a2be2; text-align:center; z-index:1001;}
+#login-modal input { display:block; margin:10px auto; padding:10px; border-radius:10px; border:none; width:200px;}
+#login-modal button { padding:10px 20px; border:none; border-radius:10px; background:#a855f7; color:white; font-weight:bold; cursor:pointer; transition:0.2s;}
+#login-modal button:hover { background:#d580ff; }
+#os-desktop { display:none; height:100vh; background:linear-gradient(#111,#000);}
+#desktop-content { padding:50px; display:flex; flex-direction:column; align-items:center; }
+.title { font-size:60px; color:#a855f7; margin-bottom:20px; }
+#search-bar { width:40%; padding:15px; border-radius:25px; border:none; text-align:center; background:rgba(255,255,255,0.1); color:white; outline:none;}
+#search-bar::placeholder { color:rgba(255,255,255,0.5);}
+#taskbar { position:fixed; bottom:0; width:100%; height:50px; background:rgba(0,0,0,0.8); display:flex; align-items:center; padding:0 10px;}
+.app-icon { width:35px; height:35px; margin:0 10px; cursor:pointer; border-radius:5px; display:flex; justify-content:center; align-items:center; background:#1a1a1a; font-size:20px; transition:0.2s;}
+.app-icon:hover { transform:scale(1.2); background:#2a2a2a; }
+/* Browser */
+#browser { display:none; height:100vh; background:#111;}
+.tabs { display:flex; background:#111; padding:5px;}
+.tab { padding:8px; background:#2a2a2a; margin-right:5px; border-radius:8px; cursor:pointer; display:flex; align-items:center;}
+.tab img { width:16px; height:16px; margin-right:5px;}
+.tab.active { background:#444;}
+iframe { width:100%; height:calc(100vh - 40px); border:none;}
+</style>
+</head>
+<body>
+<div id="boot-screen"><div class="starburst"></div><div id="viro-logo">VIRO</div></div>
+<div id="login-modal"><h2>CREATE YOUR ACCOUNT!</h2><input id="user" placeholder="Username"><input id="pass" type="password" placeholder="Password"><br><button onclick="login()">Login / Sign Up</button></div>
+<div id="os-desktop"><div id="desktop-content"><div class="title">VIRO</div><input type="text" id="search-bar" placeholder="Search VIRO..."><div id="taskbar"><div class="app-icon" title="Forum" onclick="openForum()">💬</div><div class="app-icon" title="Browser" onclick="openSearch()">🌐</div></div></div></div>
+<div id="browser"><div class="tabs" id="tabs"></div><iframe id="frame"></iframe></div>
+<script>
+setTimeout(()=>{document.getElementById('boot-screen').style.display='none';},3000);
+function login(){let u=document.getElementById('user').value,p=document.getElementById('pass').value; if(!localStorage.getItem(u)) localStorage.setItem(u,p); if(localStorage.getItem(u)===p){document.getElementById('login-modal').style.display='none'; document.getElementById('os-desktop').style.display='block'; if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();}else alert('Wrong login');}
+document.getElementById('search-bar').addEventListener('keydown',e=>{if(e.key==='Enter') openSearch(document.getElementById('search-bar').value);});
+let tabs=[],currentTab=0;
+function openSearch(query){document.getElementById('os-desktop').style.display='none'; document.getElementById('browser').style.display='block'; if(query) tabs.push('search.html?q='+encodeURIComponent(query)); else tabs.push('search.html'); currentTab=tabs.length-1; renderTabs(); document.getElementById('frame').src=tabs[currentTab];}
+function openForum(){document.getElementById('os-desktop').style.display='none'; document.getElementById('browser').style.display='block'; tabs.push('forum.html'); currentTab=tabs.length-1; renderTabs(); document.getElementById('frame').src=tabs[currentTab];}
+function renderTabs(){const c=document.getElementById('tabs'); c.innerHTML=''; tabs.forEach((t,i)=>{const div=document.createElement('div'); div.className='tab'+(i===currentTab?' active':''); const icon=document.createElement('img'); icon.src='https://github.com/viroda1/viromath/blob/main/Glow%20Black%20And%20White%20GIF%20by%20xponentialdesign%20-%20Find%20%26%20Share%20on%20GIPHY.gif'; div.appendChild(icon); const text=document.createTextNode('Tab '+(i+1)); div.appendChild(text); div.onclick=()=>switchTab(i); c.appendChild(div);});}
+function switchTab(i){currentTab=i; document.getElementById('frame').src=tabs[i]; renderTabs();}
 </script>
-
 </body>
-    </html>
+</html>`;
+
+// Download the file
+document.getElementById('downloadBtn').addEventListener('click',()=>{
+    const blob = new Blob([htmlContent],{type:'text/html'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'index.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+});
+</script>
+</body>
+</html>
