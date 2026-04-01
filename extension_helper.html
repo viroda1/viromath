@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extension Helper</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:#0a0a12;color:white;overflow-x:hidden;}
+.bg{position:fixed;width:100%;height:100%;overflow:hidden;z-index:-1;}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.5;animation:float 12s infinite alternate;}
+.orb1{width:300px;height:300px;background:#6a00ff;top:10%;left:20%;}
+.orb2{width:250px;height:250px;background:#00c3ff;bottom:10%;right:20%;}
+.orb3{width:200px;height:200px;background:#8a2be2;top:50%;left:60%;}
+@keyframes float{from{transform:translateY(0px);}to{transform:translateY(-40px);}}
+
+header{position:sticky;top:0;backdrop-filter:blur(20px);background:rgba(20,20,40,0.6);
+padding:15px;border-bottom:1px solid rgba(255,255,255,0.1);z-index:10;}
+.header-container{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;}
+h1{font-size:20px;font-weight:700;background:linear-gradient(90deg,#6a00ff,#00c3ff);
+-webkit-background-clip:text;color:transparent;}
+.controls{display:flex;gap:10px;flex-wrap:wrap;}
+input,select,button{padding:10px;border-radius:10px;border:none;background:rgba(255,255,255,0.1);color:white;}
+button{cursor:pointer;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;padding:20px;}
+.card{background:rgba(255,255,255,0.05);backdrop-filter:blur(15px);border-radius:15px;padding:15px;
+transition:0.3s;cursor:pointer;border:1px solid rgba(255,255,255,0.08);}
+.card:hover{transform:translateY(-5px) scale(1.02);box-shadow:0 0 20px rgba(100,0,255,0.4);}
+.card i{font-size:22px;margin-bottom:10px;color:#00c3ff;}
+.card h3{font-size:16px;}
+.card p{font-size:13px;opacity:0.7;margin:5px 0;}
+.tags{display:flex;flex-wrap:wrap;gap:5px;}
+.tag{font-size:10px;padding:4px 6px;background:rgba(0,200,255,0.2);border-radius:6px;}
+.status{font-size:12px;opacity:0.7;margin-top:5px;}
+</style>
+</head>
+
+<body>
+
+<div class="bg">
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+</div>
+
+<header>
+<div class="header-container">
+<h1>Extension Helper</h1>
+<div class="controls">
+<input type="text" id="search" placeholder="Search...">
+<select id="category"></select>
+<button onclick="loadData()"><i class="fas fa-sync"></i></button>
+</div>
+</div>
+<div class="status" id="status">Loading...</div>
+</header>
+
+<div class="grid" id="grid"></div>
+
+<script>
+let data = [];
+let filtered = [];
+
+const demoData = [
+{
+    category: "Demo",
+    items: [
+        {
+            name: "Example Proxy",
+            url: "https://example.com",
+            description: "Demo fallback data",
+            type: "proxy",
+            tags: ["demo"],
+            icon: "fas fa-globe"
+        }
+    ]
+}
+];
+
+function getIcon(item) {
+    if (item.icon) return item.icon;
+    if (item.type === "proxy") return "fas fa-globe";
+    return "fas fa-link";
+}
+
+function render() {
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+
+    filtered.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.onclick = () => window.open(item.url, "_blank");
+
+        card.innerHTML = `
+            <i class="${getIcon(item)}"></i>
+            <h3>${item.name}</h3>
+            <p>${new URL(item.url).hostname}</p>
+            <p>${item.description || ""}</p>
+            <div class="tags">
+                ${(item.tags || []).map(t => `<span class="tag">${t}</span>`).join("")}
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+
+    document.getElementById("status").innerText =
+        `Loaded ${filtered.length} resources`;
+}
+
+function filter() {
+    const search = document.getElementById("search").value.toLowerCase();
+    const category = document.getElementById("category").value;
+
+    filtered = [];
+
+    data.forEach(cat => {
+        if (category !== "all" && cat.category !== category) return;
+
+        cat.items.forEach(item => {
+            const text = (
+                item.name +
+                item.description +
+                item.url +
+                (item.tags || []).join(" ")
+            ).toLowerCase();
+
+            if (text.includes(search)) {
+                filtered.push(item);
+            }
+        });
+    });
+
+    render();
+}
+
+function populateCategories() {
+    const select = document.getElementById("category");
+    select.innerHTML = `<option value="all">All</option>`;
+
+    data.forEach(cat => {
+        const opt = document.createElement("option");
+        opt.value = cat.category;
+        opt.textContent = cat.category;
+        select.appendChild(opt);
+    });
+}
+
+async function loadData() {
+    document.getElementById("status").innerText = "Loading...";
+
+    try {
+        const res = await fetch("proxy.json");
+        if (!res.ok) throw new Error();
+
+        data = await res.json();
+    } catch {
+        document.getElementById("status").innerText =
+            "Failed to load proxy.json (using demo data)";
+        data = demoData;
+    }
+
+    populateCategories();
+    filtered = data.flatMap(c => c.items);
+    render();
+}
+
+document.getElementById("search").addEventListener("input", filter);
+document.getElementById("category").addEventListener("change", filter);
+
+loadData();
+</script>
+
+</body>
+</html>
